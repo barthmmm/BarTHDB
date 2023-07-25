@@ -27,12 +27,18 @@ namespace BarTHDB.Model
             }
         }
         private decimal _costByDefault;
+        public bool Active { get; set; }
 
-        public Article(string name) => Name = name;
+        public Article(string name)
+        {
+            Name = name;
+            Active = true;
+        }
 
         public Article(string name, decimal cost) {
             Name = name;
             CostByDefault = cost;
+            Active = true;
         }
     }
 }
