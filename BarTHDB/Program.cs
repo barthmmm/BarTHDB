@@ -1,4 +1,5 @@
-﻿using BarTHDB.Model;
+﻿using BarTHDB.Exceptions;
+using BarTHDB.Model;
 
 namespace BarTHDB
 {
@@ -13,6 +14,61 @@ namespace BarTHDB
             CreateFakeDB(controller);
 
             Console.WriteLine($"Quantité de suze: {controller.GetArticleQuantity(0)}");
+
+            try
+            {
+                Console.WriteLine($"Liste des movements du dernier mois:");
+                ShowItemInEntryList(controller.GetEntryInPeriod(DateTime.Now.AddMonths(-1), DateTime.Now));
+                
+                Console.WriteLine($"Liste des movements des deux derniers mois:");
+                ShowItemInEntryList(controller.GetEntryInPeriod(DateTime.Now.AddMonths(-2), DateTime.Now));
+
+                Console.WriteLine($"Liste des movements du mois dernier:");
+                ShowItemInEntryList(controller.GetEntryInPeriod(DateTime.Now.AddMonths(-2), DateTime.Now.AddMonths(-1)));
+
+                Console.WriteLine($"Liste des entrées du dernier mois:");
+                ShowItemInEntryList(ConvertListInputInEntry(controller.GetInputsInPeriod(DateTime.Now.AddMonths(-1), DateTime.Now)));
+
+                Console.WriteLine($"Liste des entrées des deux derniers mois:");
+                ShowItemInEntryList(ConvertListInputInEntry(controller.GetInputsInPeriod(DateTime.Now.AddMonths(-2), DateTime.Now)));
+
+                Console.WriteLine($"Liste des sorties du dernier mois:");
+                ShowItemInEntryList(ConvertListOutputInEntry(controller.GetOutputsInPeriod(DateTime.Now.AddMonths(-1), DateTime.Now)));
+
+                Console.WriteLine($"Liste des sorties des deux derniers mois:");
+                ShowItemInEntryList(ConvertListOutputInEntry(controller.GetOutputsInPeriod(DateTime.Now.AddMonths(-2), DateTime.Now)));
+            }
+            catch( InvalidPeriodException ex )
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        static void ShowItemInEntryList(List<Entry> entries) 
+        {
+            foreach(Entry entry in entries)
+            {
+                Console.WriteLine(entry.ToString());
+            }
+        }
+        static List<Entry> ConvertListInputInEntry(List<Input> inputs)
+        {
+            List<Entry> entries = new List<Entry>();
+            foreach (Input input in inputs)
+            {
+                entries.Add((Entry)input);
+            }
+            return entries;
+        }
+
+        static List<Entry> ConvertListOutputInEntry(List<Output> outputs)
+        {
+            List<Entry> entries = new List<Entry>();
+            foreach (Output output in outputs)
+            {
+                entries.Add((Entry)output);
+            }
+            return entries;
         }
 
         static void CreateFakeDB(Controller controller)
@@ -41,11 +97,11 @@ namespace BarTHDB
             }
 
             //Deux suze entrée il y a 2 mois
-            controller.GetEntries()[0].Date = DateTime.Now.AddMonths(-2);
-            controller.GetEntries()[1].Date = DateTime.Now.AddMonths(-2);
+            controller.GetEntries()[0].Date = DateTime.Now.AddMonths(-2).AddDays(1);
+            controller.GetEntries()[1].Date = DateTime.Now.AddMonths(-2).AddDays(1);
 
             //Une suze entrée il y a 1 mois
-            controller.GetEntries()[2].Date = DateTime.Now.AddMonths(-1);
+            controller.GetEntries()[2].Date = DateTime.Now.AddMonths(-1).AddDays(1);
 
             //Ajout de 1 McCallan
             controller.AddInput(mcCallan, mcCallan.CostByDefault);
@@ -55,9 +111,6 @@ namespace BarTHDB
             {
                 controller.AddOutput(suze);
             }
-
-            //Test pour GIT, ajout d'un GIN
-            controller.AddInput(gordon750ml, gordon750ml.CostByDefault);
         }
     }
 }

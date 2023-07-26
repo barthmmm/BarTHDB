@@ -15,5 +15,10 @@ namespace BarTHDB.Model
             this.Date = date;  
             this.Article = article;
         }
+
+        public override string ToString()
+        {
+            return $"{Date.ToString()} - {Article.ToString()}";
+        }
     }
 }

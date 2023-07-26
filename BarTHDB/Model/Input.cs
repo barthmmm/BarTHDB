@@ -38,5 +38,10 @@ namespace BarTHDB.Model
         {
             return Article.CostByDefault;
         }
+
+        public override string ToString() 
+        {
+            return $"Input: {Date.ToString()} - {Article.ToString()} - Real Cost: {Cost}";
+        }
     }
 }

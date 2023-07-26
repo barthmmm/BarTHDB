@@ -1,4 +1,5 @@
-﻿using BarTHDB.Model;
+﻿using BarTHDB.Exceptions;
+using BarTHDB.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,6 +99,77 @@ namespace BarTHDB
             }
 
             return quantity;
+        }
+
+        public List<Entry> GetEntryInPeriod(DateTime start, DateTime end)
+        {
+            if (end < start)
+            {
+                throw new InvalidPeriodException("The start DateTime of the period must be lesser than the end");
+            }
+            List<Entry> entriesInPeriod = new List<Entry>();
+
+            foreach (Entry entry in entries)
+            {
+                if (isEntryInPeriod(entry, start, end))
+                {
+                    entriesInPeriod.Add(entry);
+                }
+            }
+
+            return entriesInPeriod;
+        }
+        public List<Input> GetInputsInPeriod(DateTime start, DateTime end)
+        {
+            if (end < start)
+            {
+                throw new InvalidPeriodException("The start DateTime of the period must be lesser than the end");
+            }
+            List<Input> inputsInPeriod = new List<Input>();
+
+            foreach (Entry entry in entries)
+            {
+                if(entry is Input)
+                {
+                    if (isEntryInPeriod(entry, start, end))
+                    {
+                        inputsInPeriod.Add((Input)entry);
+                    }
+                }                
+            }
+
+            return inputsInPeriod;
+        }
+
+        public List<Output> GetOutputsInPeriod(DateTime start, DateTime end)
+        {
+            if (end < start)
+            {
+                throw new InvalidPeriodException("The start DateTime of the period must be lesser than the end");
+            }
+            List<Output> outputsInPeriod = new List<Output>();
+
+            foreach (Entry entry in entries)
+            {
+                if (entry is Output)
+                {
+                    if (isEntryInPeriod(entry, start, end))
+                    {
+                        outputsInPeriod.Add((Output)entry);
+                    }
+                }
+            }
+
+            return outputsInPeriod;
+        }
+
+        private bool isEntryInPeriod(Entry entry, DateTime start, DateTime end)
+        {
+            if(entry.Date > start && entry.Date < end)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

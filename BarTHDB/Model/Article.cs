@@ -40,5 +40,10 @@ namespace BarTHDB.Model
             CostByDefault = cost;
             Active = true;
         }
+
+        public override string ToString()
+        {
+            return $"{Name} (Default Cost: {CostByDefault})";
+        }
     }
 }
