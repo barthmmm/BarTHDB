@@ -55,6 +55,9 @@ namespace BarTHDB
             {
                 controller.AddOutput(suze);
             }
+
+            //Test pour GIT, ajout d'un GIN
+            controller.AddInput(gordon750ml, gordon750ml.CostByDefault);
         }
     }
 }
